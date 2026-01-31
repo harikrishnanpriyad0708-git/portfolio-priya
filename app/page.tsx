@@ -4,9 +4,10 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 import { Database, Cloud, Terminal, Award, BookOpen, Code, Cpu } from 'lucide-react';
 
-// --- Safe Particle Logic (No maath library needed) ---
+// --- Safe Particle Logic ---
 function DataParticles() {
-  const ref = useRef<any>();
+  // FIXED: Added (null) to satisfy strict TypeScript rules
+  const ref = useRef<any>(null); 
   const [sphere] = useState(() => {
     const arr = new Float32Array(5000);
     for (let i = 0; i < 5000; i++) {
@@ -36,7 +37,6 @@ export default function Portfolio() {
 
   useEffect(() => {
     setMounted(true);
-    // Dynamic import to avoid Turbopack build errors with animejs
     import('animejs').then((animeModule) => {
       const anime = animeModule.default;
       anime({
