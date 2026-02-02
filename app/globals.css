@@ -2,32 +2,5 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #050505;
-}
-
-body {
-  background-color: var(--background);
-  color: white;
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Custom Scrollbar for Cyberpunk feel */
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: #050505;
-}
-::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #00f3ff;
-}
-
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
+body { background: #050505; margin: 0; }
