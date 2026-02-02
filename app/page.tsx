@@ -4,34 +4,27 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 import { Database, Cloud, Terminal, Award, BookOpen, Code, Cpu } from 'lucide-react';
 
-// --- Fixed 3D Particle Logic ---
 function DataParticles() {
-  const ref = useRef<any>(null); // Added 'null' here to fix the Type Error
+  const ref = useRef<any>(null);
   const [sphere] = useState(() => {
-    const arr = new Float32Array(5000 * 3); // 5000 points, 3 coords each
+    const arr = new Float32Array(5000 * 3);
     for (let i = 0; i < 5000 * 3; i++) {
-      arr[i] = (Math.random() - 0.5) * 3;
+      arr[i] = (Math.random() - 0.5) * 10;
     }
     return arr;
   });
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (ref.current) {
-      ref.current.rotation.x -= delta / 15;
-      ref.current.rotation.y -= delta / 20;
+      ref.current.rotation.x -= delta / 10;
+      ref.current.rotation.y -= delta / 15;
     }
   });
 
   return (
     <group rotation={[0, 0, Math.PI / 4]}>
       <Points ref={ref} positions={sphere} stride={3} frustumCulled={false}>
-        <PointMaterial 
-          transparent 
-          color="#00f3ff" 
-          size={0.005} 
-          sizeAttenuation={true} 
-          depthWrite={false} 
-        />
+        <PointMaterial transparent color="#00f3ff" size={0.015} sizeAttenuation={true} depthWrite={false} />
       </Points>
     </group>
   );
@@ -42,130 +35,133 @@ export default function Portfolio() {
 
   useEffect(() => {
     setMounted(true);
-    // Dynamic import for animejs to prevent build-time crashes
-    const loadAnimations = async () => {
-      const anime = (await import('animejs')).default;
-      anime({
-        targets: '.animate-in',
-        translateY: [30, 0],
-        opacity: [0, 1],
-        delay: anime.stagger(200),
-        easing: 'easeOutExpo',
-        duration: 1200
-      });
+    const initAnims = async () => {
+      try {
+        const anime = (await import('animejs')).default;
+        anime({
+          targets: '.animate-in',
+          translateY: [20, 0],
+          opacity: [0, 1],
+          delay: anime.stagger(100),
+          easing: 'easeOutExpo',
+        });
+      } catch (e) {
+        console.log("Animation load skipped");
+      }
     };
-    loadAnimations();
+    initAnims();
   }, []);
 
   if (!mounted) return <div className="bg-black min-h-screen" />;
 
   return (
-    <div className="min-h-screen bg-black text-cyan-400 font-mono selection:bg-cyan-900 overflow-x-hidden">
-      <div className="fixed inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 1] }}>
+    <div className="min-h-screen bg-black text-cyan-400 font-mono selection:bg-cyan-500/30 overflow-x-hidden">
+      <div className="fixed inset-0 z-0 opacity-40">
+        <Canvas camera={{ position: [0, 0, 5] }}>
           <DataParticles />
         </Canvas>
       </div>
 
       <main className="relative z-10 max-w-5xl mx-auto px-6 py-20">
-        {/* HERO SECTION */}
-        <section className="mb-32 animate-in opacity-0">
-          <h1 className="text-4xl md:text-6xl font-black mb-2 tracking-tighter text-white uppercase">
-            PRIYA DHARSHINI <span className="text-cyan-500">H</span>
-          </h1>
-          <p className="text-lg md:text-xl text-cyan-200 mb-6 flex items-center gap-2">
-            <Terminal size={20} /> DATA ENGINEER // 4.8 YEARS EXP
-          </p>
-          <div className="border-l-2 border-cyan-500 pl-6 bg-cyan-950/20 py-4">
-            <p className="text-sm text-cyan-300 uppercase tracking-widest font-bold text-white">Assistant Systems Engineer @ TCS</p>
-            <p className="text-xs text-cyan-500 mt-2 uppercase">Core Tech: PySpark | Azure Databricks | SQL | Hadoop</p>
+        {/* HEADER */}
+        <header className="mb-24 animate-in opacity-0">
+          <div className="inline-block px-2 py-1 border border-cyan-500 text-[10px] mb-4 text-cyan-500 uppercase tracking-[0.3em]">
+            Data Engineer Profile // V 4.8
           </div>
-        </section>
+          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase mb-4">
+            Priya Dharshini <span className="text-cyan-500">H</span>
+          </h1>
+          <div className="flex flex-wrap gap-6 text-sm text-cyan-200/70 border-l border-cyan-800 pl-6">
+            <span className="flex items-center gap-2"><Terminal size={14}/> 4.8 Yrs Exp</span>
+            <span className="flex items-center gap-2"><Database size={14}/> PySpark / SQL / Hadoop</span>
+            <span className="flex items-center gap-2"><Cloud size={14}/> Azure Cloud</span>
+          </div>
+        </header>
 
         {/* SKILLS */}
         <section className="mb-32 animate-in opacity-0">
-          <h2 className="text-2xl font-bold mb-10 flex items-center gap-2 border-b border-cyan-800 pb-2 uppercase">
-            <Cpu className="text-pink-500" /> Technical_Inventory
+          <h2 className="text-xl font-bold mb-8 flex items-center gap-3 text-white uppercase tracking-widest">
+            <Cpu size={18} className="text-pink-500" /> Tech_Stack
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="border border-cyan-900 p-6 bg-black/80 backdrop-blur-sm hover:border-cyan-400 transition-all">
-              <Code className="mb-4 text-cyan-500" />
-              <h3 className="text-white font-bold mb-2 uppercase">Languages</h3>
-              <p className="text-xs leading-relaxed">Python, SQL, PL/SQL, Bash, PySpark</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
+            <div className="bg-cyan-950/10 border border-cyan-900/50 p-6">
+              <Code className="text-cyan-500 mb-4" size={20} />
+              <h3 className="text-white text-xs font-bold uppercase mb-2">Languages</h3>
+              <p className="text-[11px] leading-relaxed opacity-60">Python, SQL, Oracle PL/SQL, Bash, PySpark</p>
             </div>
-            <div className="border border-cyan-900 p-6 bg-black/80 backdrop-blur-sm hover:border-cyan-400 transition-all">
-              <Database className="mb-4 text-cyan-500" />
-              <h3 className="text-white font-bold mb-2 uppercase">Frameworks</h3>
-              <p className="text-xs leading-relaxed">Spark, Hive, Hadoop, Oracle DB, OBIEE</p>
+            <div className="bg-cyan-950/10 border border-cyan-900/50 p-6">
+              <Database className="text-cyan-500 mb-4" size={20} />
+              <h3 className="text-white text-xs font-bold uppercase mb-2">Big Data</h3>
+              <p className="text-[11px] leading-relaxed opacity-60">Spark, Hadoop, Hive, Oracle DB, OBIEE, SCD Models</p>
             </div>
-            <div className="border border-cyan-900 p-6 bg-black/80 backdrop-blur-sm hover:border-cyan-400 transition-all">
-              <Cloud className="mb-4 text-cyan-500" />
-              <h3 className="text-white font-bold mb-2 uppercase">Cloud & CI/CD</h3>
-              <p className="text-xs leading-relaxed">Azure Databricks, ADF, Azure DevOps, Control-M</p>
+            <div className="bg-cyan-950/10 border border-cyan-900/50 p-6">
+              <Cloud className="text-cyan-500 mb-4" size={20} />
+              <h3 className="text-white text-xs font-bold uppercase mb-2">Platform</h3>
+              <p className="text-[11px] leading-relaxed opacity-60">Azure Databricks, ADF, Azure DevOps, Control-M, Jenkins</p>
             </div>
           </div>
         </section>
 
-        {/* PROJECTS */}
+        {/* EXPERIENCE */}
         <section className="mb-32 animate-in opacity-0">
-          <h2 className="text-2xl font-bold mb-10 flex items-center gap-2 border-b border-cyan-800 pb-2 uppercase text-white">
-            <Database className="text-pink-500" /> Experience_Logs
+          <h2 className="text-xl font-bold mb-8 flex items-center gap-3 text-white uppercase tracking-widest">
+            <Terminal size={18} className="text-pink-500" /> Work_History
           </h2>
-          <div className="space-y-12">
-            <div className="border-l border-pink-500 pl-8 relative">
-              <div className="absolute w-3 h-3 bg-pink-500 -left-[6px] top-2 shadow-[0_0_10px_#ff00ff]" />
-              <h3 className="text-xl text-white font-bold uppercase tracking-tight">Standard Chartered Bank</h3>
-              <p className="text-cyan-600 mb-4 text-xs italic">Oct 2022 - Present | TCS</p>
-              <ul className="text-sm space-y-3 text-cyan-100/80">
-                <li>• Optimized 10+ pipelines for <span className="text-cyan-400">10TB+ Scale</span></li>
-                <li>• Led <span className="text-white">Hive to PySpark Migration</span> on Azure Cloud</li>
-                <li>• Improved data speed by <span className="text-cyan-400">40%</span> using partitioning and indexing</li>
-                <li>• Automated workflows in <span className="text-white">Control-M</span> and releases via Azure DevOps</li>
+          <div className="space-y-16">
+            <div className="relative pl-8 border-l border-cyan-900">
+              <div className="absolute top-0 left-[-4px] w-2 h-2 bg-pink-500 rounded-full shadow-[0_0_10px_#ff00ff]" />
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-lg text-white font-bold uppercase">Standard Chartered Bank</h3>
+                <span className="text-[10px] bg-cyan-900/30 px-2 py-1 text-cyan-400">2022 - PRESENT</span>
+              </div>
+              <p className="text-xs text-cyan-500 mb-4 uppercase font-bold tracking-tighter">Assistant Systems Engineer // TCS</p>
+              <ul className="text-xs space-y-3 opacity-80 leading-relaxed">
+                <li>• Managed <span className="text-white">10+ scalable pipelines</span> processing 10TB+ of data.</li>
+                <li>• Migrated Hive systems to <span className="text-white">PySpark & Azure Cloud</span> (40% performance gain).</li>
+                <li>• Optimized SQL queries to improve retrieval speed by <span className="text-white">40%</span>.</li>
+                <li>• Automated release cycles via <span className="text-white">Azure DevOps CI/CD</span>.</li>
               </ul>
             </div>
-            
-            <div className="border-l border-cyan-500 pl-8 relative">
-              <div className="absolute w-3 h-3 bg-cyan-500 -left-[6px] top-2 shadow-[0_0_10px_#00f3ff]" />
-              <h3 className="text-xl text-white font-bold uppercase tracking-tight">Gulf Insurance Group</h3>
-              <p className="text-cyan-600 mb-4 text-xs italic">Apr 2021 - Oct 2022 | Azentio</p>
-              <ul className="text-sm space-y-3 text-cyan-100/80">
-                <li>• Optimized complex PL/SQL queries boosting performance by <span className="text-cyan-400 font-bold">80%</span></li>
-                <li>• Managed secure file transfers via Solace & FileIT</li>
+
+            <div className="relative pl-8 border-l border-cyan-900">
+              <div className="absolute top-0 left-[-4px] w-2 h-2 bg-cyan-500 rounded-full" />
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-lg text-white font-bold uppercase">Gulf Insurance Group</h3>
+                <span className="text-[10px] bg-cyan-900/30 px-2 py-1 text-cyan-400">2021 - 2022</span>
+              </div>
+              <p className="text-xs text-cyan-500 mb-4 uppercase font-bold tracking-tighter">Associate Software Engineer // Azentio</p>
+              <ul className="text-xs space-y-3 opacity-80 leading-relaxed">
+                <li>• Boosted reporting system performance by <span className="text-white">80%</span> via PL/SQL optimization.</li>
+                <li>• Managed secure data integrations between TP systems.</li>
               </ul>
             </div>
           </div>
         </section>
 
         {/* ACHIEVEMENTS */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-12 animate-in opacity-0 mb-32">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-12 animate-in opacity-0">
           <div>
-            <h2 className="text-xl font-bold mb-6 border-b border-cyan-800 pb-2 text-white uppercase">Achievements</h2>
-            <div className="space-y-4">
-              <div className="p-3 bg-cyan-950/20 border-l-2 border-pink-500">
-                <p className="text-sm">3x Star of the Month Award (TCS)</p>
-              </div>
-              <div className="p-3 bg-cyan-950/20 border-l-2 border-pink-500">
-                <p className="text-sm">GEM Award for Outstanding Excellence (TCS)</p>
-              </div>
-              <div className="p-3 bg-cyan-950/20 border-l-2 border-pink-500">
-                <p className="text-sm">Contextual Master: Compliance Restoration</p>
-              </div>
+            <h2 className="text-xl font-bold mb-6 text-white uppercase tracking-widest border-b border-cyan-900 pb-2 flex items-center gap-2">
+              <Award size={16} className="text-pink-500"/> Recognition
+            </h2>
+            <div className="space-y-3">
+              <div className="p-3 bg-cyan-950/20 text-xs border-r border-cyan-500 italic">"Star of the Month" (x3) - TCS</div>
+              <div className="p-3 bg-cyan-950/20 text-xs border-r border-cyan-500 italic">"GEM Award" for Excellence - TCS</div>
             </div>
           </div>
           <div>
-            <h2 className="text-xl font-bold mb-6 border-b border-cyan-800 pb-2 text-white uppercase">Education</h2>
-            <div className="p-4 border border-dashed border-cyan-700">
-              <p className="text-white font-bold">B.Tech in Information Technology</p>
-              <p className="text-xs mt-1">JEPPIAAR SRR Engineering College</p>
-              <p className="text-cyan-500 text-xs mt-1 italic italic text-right">CGPA: 7.01</p>
+            <h2 className="text-xl font-bold mb-6 text-white uppercase tracking-widest border-b border-cyan-900 pb-2 flex items-center gap-2">
+              <BookOpen size={16} className="text-pink-500"/> Certs
+            </h2>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="p-3 border border-cyan-900 text-[10px] text-center uppercase tracking-tighter">Azure AZ-900</div>
+              <div className="p-3 border border-cyan-900 text-[10px] text-center uppercase tracking-tighter">Azure DP-900</div>
             </div>
           </div>
         </section>
 
-        <footer className="text-center pt-10 border-t border-cyan-900 opacity-50">
-          <p className="text-[10px] tracking-[0.5em] uppercase">
-            Data_Stream_Stable // Port: 8939285953 // Priya Dharshini H
-          </p>
+        <footer className="mt-40 text-center opacity-20">
+          <p className="text-[9px] tracking-[1em] uppercase">Connect // 8939285953 // PRIYA DHARSHINI H</p>
         </footer>
       </main>
     </div>
